@@ -11,6 +11,7 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
 )
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from .permissions import IsOwnerOrReadOnly
 from .serializers import UserSerializer, PostSerializer
 from .models import Post
 
@@ -51,7 +52,5 @@ class PostCreate(CreateAPIView):
 
 class PostDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
-    permission_classes = [
-        IsAdminUser,
-        IsAuthenticated,
-    ]
+    queryset = Post.objects.all()
+    permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
