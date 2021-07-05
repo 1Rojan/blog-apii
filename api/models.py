@@ -9,6 +9,9 @@ class Post(models.Model):
         "auth.User", related_name="posts", on_delete=models.CASCADE
     )
 
+    def __str__(self):
+      return self.title
+
     class Meta:
         ordering = ["created"]
 

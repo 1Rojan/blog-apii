@@ -7,6 +7,8 @@ from .views import (
     UserList,
     UserDetail,
     PostDetail,
+    CommentList,
+    CommentDetail,
 )
 
 urlpatterns = [
@@ -22,5 +24,7 @@ urlpatterns = [
     ),
     path("posts/", PostList.as_view()),
     path("posts/create/", PostCreate.as_view()),
-    path("posts/<pk>", PostDetail.as_view()),
+    path("posts/<pk>/", PostDetail.as_view()),
+    path("comments/", CommentList.as_view()),
+    path("comments/<pk>/", CommentDetail.as_view()),
 ]

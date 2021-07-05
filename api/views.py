@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from rest_framework import serializers
 from rest_framework.generics import (
+    ListCreateAPIView,
     CreateAPIView,
     ListAPIView,
     RetrieveAPIView,
@@ -12,8 +13,8 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
-from .serializers import UserSerializer, PostSerializer
-from .models import Post
+from .serializers import CommentSerializer, UserSerializer, PostSerializer
+from .models import Post, Comment
 
 
 class Home(TemplateView):
@@ -54,3 +55,17 @@ class PostDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
     permission_classes = [IsOwnerOrReadOnly, IsAuthenticated]
+
+
+class CommentList(ListCreateAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class CommentDetail(RetrieveUpdateDestroyAPIView):
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
