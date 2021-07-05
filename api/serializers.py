@@ -2,10 +2,24 @@ from re import U
 from django.db import models
 from django.db.models import fields
 from rest_framework.generics import RetrieveUpdateDestroyAPIView
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Comment, Post
+from .models import Category, Comment, Post
+
+
+class CatgorySerializer(ModelSerializer):
+    owner = serializers.ReadOnlyField(source="owner.username")
+    posts = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
+    class Meta:
+        model = Category
+        fields = [
+            "id",
+            "name",
+            "owner",
+            "posts",
+        ]
 
 
 class PostSerializer(ModelSerializer):
@@ -20,12 +34,14 @@ class PostSerializer(ModelSerializer):
             "body",
             "owner",
             "comments",
+            "categories",
         ]
 
 
 class UserSerializer(ModelSerializer):
     posts = PostSerializer(many=True, read_only=True)
     comments = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    categories = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -35,6 +51,7 @@ class UserSerializer(ModelSerializer):
             "password",
             "posts",
             "comments",
+            "categories",
         ]
         extra_kwargs = {"password": {"write_only": True}}
 
@@ -56,7 +73,3 @@ class CommentSerializer(ModelSerializer):
             "body",
             "post",
         ]
-
-
-    
-

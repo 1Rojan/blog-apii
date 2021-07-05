@@ -13,8 +13,13 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from .permissions import IsOwnerOrReadOnly
-from .serializers import CommentSerializer, UserSerializer, PostSerializer
-from .models import Post, Comment
+from .serializers import (
+    CommentSerializer,
+    UserSerializer,
+    PostSerializer,
+    CatgorySerializer,
+)
+from .models import Post, Comment, Category
 
 
 class Home(TemplateView):
@@ -35,12 +40,8 @@ class UserDetail(RetrieveAPIView):
     serializer_class = UserSerializer
 
 
-class PostList(ListAPIView):
+class PostList(ListCreateAPIView):
     queryset = Post.objects.all()
-    serializer_class = PostSerializer
-
-
-class PostCreate(CreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [
         IsAuthenticated,
@@ -68,4 +69,18 @@ class CommentList(ListCreateAPIView):
 class CommentDetail(RetrieveUpdateDestroyAPIView):
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+
+class CategoryList(ListCreateAPIView):
+    serializer_class = CatgorySerializer
+    queryset = Category.objects.all()
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class CategoryDetail(RetrieveUpdateDestroyAPIView):
+    serializer_class = CatgorySerializer
+    queryset = Category.objects.all()
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]

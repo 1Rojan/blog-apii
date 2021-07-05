@@ -2,13 +2,14 @@ from django.urls import path
 from .views import (
     Home,
     UserRegister,
-    PostCreate,
     PostList,
     UserList,
     UserDetail,
     PostDetail,
     CommentList,
     CommentDetail,
+    CategoryList,
+    CategoryDetail,
 )
 
 urlpatterns = [
@@ -23,8 +24,9 @@ urlpatterns = [
         UserDetail.as_view(),
     ),
     path("posts/", PostList.as_view()),
-    path("posts/create/", PostCreate.as_view()),
     path("posts/<pk>/", PostDetail.as_view()),
     path("comments/", CommentList.as_view()),
     path("comments/<pk>/", CommentDetail.as_view()),
+    path("categories/", CategoryList.as_view()),
+    path("categories/<pk>/", CategoryDetail.as_view()),
 ]
